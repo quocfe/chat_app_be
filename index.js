@@ -6,7 +6,13 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { app, server } from './src/socket/socket.js';
 
-app.use(cors());
+app.use(
+	cors({
+		origin: ['http://localhost:5173', 'https://chat-app-fe-green.vercel.app'], // Thay bằng URL front-end của bạn
+		methods: ['GET', 'POST', 'PUT', 'DELETE'], // Các phương thức được phép
+		credentials: true, // Nếu bạn sử dụng cookie
+	})
+);
 app.use(express.json());
 app.use(cookieParser());
 dotenv.config();

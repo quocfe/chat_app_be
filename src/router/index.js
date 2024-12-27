@@ -11,7 +11,7 @@ function route(app) {
 	app.use('/api/reactmessage', reactMessageRoutes);
 	app.use('/api/users', userRoutes);
 	app.use('/', (req, res) => {
-		res.status(200).json({ error: 'Hello word' });
+		res.status(200).json('Hello word');
 	});
 }
 
