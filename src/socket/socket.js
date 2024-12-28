@@ -6,9 +6,11 @@ const app = express();
 
 const server = http.createServer(app);
 const io = new Server(server, {
+	transports: ['polling'],
 	cors: {
 		origin: ['https://chat-app-fe-green.vercel.app'],
 		methods: ['GET', 'POST'],
+		credentials: true,
 	},
 });
 
