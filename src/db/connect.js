@@ -6,7 +6,7 @@ const connect = async () => {
 		await mongoose.connect(uri);
 		console.log('connect mongodb');
 	} catch (error) {
-		console.log('disconnect mongodb');
+		console.log('disconnect mongodb', error);
 	}
 };
 
