@@ -8,7 +8,7 @@ import { app, server } from './src/socket/socket.js';
 
 app.use(
 	cors({
-		origin: 'https://chat-app-fe-green.vercel.app', // Thay bằng URL front-end của bạn
+		origin: '*', // Thay bằng URL front-end của bạn
 		methods: ['GET', 'POST', 'PUT', 'DELETE'], // Các phương thức được phép
 		credentials: true, // Nếu bạn sử dụng cookie
 	})
