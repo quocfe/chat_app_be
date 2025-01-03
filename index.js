@@ -5,6 +5,10 @@ import connect from './src/db/connect.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { app, server } from './src/socket/socket.js';
+import fs from 'fs';
+import path from 'path';
+import YAML from 'yaml';
+import swaggerUI from 'swagger-ui-express';
 
 app.use(
 	cors({
@@ -17,6 +21,10 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 dotenv.config();
+
+const file = fs.readFileSync(path.join(__dirname, 'swagger.yaml'), 'utf8');
+const swaggerDocument = YAML.parse(file);
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 const PORT = process.env.PORT || 5000;
 

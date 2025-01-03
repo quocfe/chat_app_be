@@ -1,0 +1,156 @@
+openapi: 3.0.3
+info:
+  title: Swagger Chat App
+  description: Chat App RestFullApi
+  version: 1.0.11
+servers:
+  - url: https://chat-app-be-17fu.onrender.com/api
+tags:
+  - name: Auth
+    description: Authentication
+
+paths:
+  /auth/signup:
+    post:
+      tags:
+        - Auth
+      summary: Register a new user
+      requestBody:
+        description: Register a new user
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - fullName
+                - username
+                - password
+                - confirmPassword
+                - gender
+              properties:
+                fullName:
+                  type: string
+                  example: John Doe
+                username:
+                  type: string
+                  example: johndoe
+                password:
+                  type: string
+                  example: mypassword123
+                confirmPassword:
+                  type: string
+                  example: mypassword123
+                gender:
+                  type: string
+                  enum: [male, female]
+                  example: male
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    example: 64afdf12345
+                  fullName:
+                    type: string
+                    example: John Doe
+                  username:
+                    type: string
+                    example: johndoe
+                  profilePic:
+                    type: string
+                    example: https://avatar.iran.liara.run/public/boy?username=johndoe
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Passwords don't match
+        '500':
+          description: Internal Server Error
+
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login user
+      requestBody:
+        description: User login
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  example: user1
+                password:
+                  type: string
+                  example: 123123123
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    example: 64afdf12345
+                  fullName:
+                    type: string
+                    example: John Doe
+                  username:
+                    type: string
+                    example: johndoe
+                  profilePic:
+                    type: string
+                    example: https://avatar.iran.liara.run/public/boy?username=johndoe
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        '400':
+          description: Invalid username or password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid username or password
+        '500':
+          description: Internal Server Error
+
+  /auth/logout:
+    post:
+      tags:
+        - Auth
+      summary: Logout user
+      responses:
+        '200':
+          description: Logged out successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Logged out successfully
+        '500':
+          description: Internal Server Error
