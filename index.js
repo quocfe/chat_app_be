@@ -6,9 +6,10 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { app, server } from './src/socket/socket.js';
 import fs from 'fs';
-import path from 'path';
+import path, { dirname } from 'path';
 import YAML from 'yaml';
 import swaggerUI from 'swagger-ui-express';
+import { fileURLToPath } from 'url';
 
 app.use(
 	cors({
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use(cookieParser());
 dotenv.config();
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const file = fs.readFileSync(path.join(__dirname, 'swagger.yaml'), 'utf8');
 const swaggerDocument = YAML.parse(file);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));

@@ -5,6 +5,7 @@ info:
   version: 1.0.11
 servers:
   - url: https://chat-app-be-17fu.onrender.com/api
+  - url: http://localhost:8800/
 tags:
   - name: Auth
     description: Authentication
@@ -154,3 +155,506 @@ paths:
                     example: Logged out successfully
         '500':
           description: Internal Server Error
+
+  /messages/{receiverId}:
+    post:
+      tags:
+        - Messages
+      summary: Send a new message
+      description: Send a message from the logged-in user to the specified receiver.
+      parameters:
+        - in: path
+          name: receiverId
+          required: true
+          schema:
+            type: string
+          description: ID of the message receiver.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - message
+              properties:
+                message:
+                  type: string
+                  example: Hello, how are you?
+      responses:
+        '201':
+          description: Message sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    example: 64afdf12345
+                  senderId:
+                    type: string
+                    example: 64afdf67890
+                  receiverId:
+                    type: string
+                    example: 64afdf45678
+                  message:
+                    type: string
+                    example: Hello, how are you?
+        '500':
+          description: Internal Server Error
+
+  /messages/{userToChatId}:
+    get:
+      tags:
+        - Messages
+      summary: Get all messages between two users
+      description: Retrieve all messages exchanged between the logged-in user and another user.
+      parameters:
+        - in: path
+          name: userToChatId
+          required: true
+          schema:
+            type: string
+          description: ID of the user to chat with.
+      responses:
+        '200':
+          description: Messages retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                      example: 64afdf12345
+                    senderId:
+                      type: string
+                      example: 64afdf67890
+                    receiverId:
+                      type: string
+                      example: 64afdf45678
+                    message:
+                      type: string
+                      example: Hello, how are you?
+                    createdAt:
+                      type: string
+                      format: date-time
+                      example: 2024-12-22T10:30:00Z
+        '500':
+          description: Internal Server Error
+
+  /messages/unsend/{messageId}:
+    patch:
+      tags:
+        - Messages
+      summary: Unsend a message
+      description: Remove a message sent by the logged-in user.
+      parameters:
+        - in: path
+          name: messageId
+          required: true
+          schema:
+            type: string
+          description: ID of the message to unsend.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - statusUnSend
+              properties:
+                statusUnSend:
+                  type: boolean
+                  example: true
+      responses:
+        '201':
+          description: Message unsent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    example: 64afdf12345
+                  senderId:
+                    type: string
+                    example: 64afdf67890
+                  receiverId:
+                    type: string
+                    example: 64afdf45678
+                  message:
+                    type: string
+                    example: Hello, how are you?
+                  statusUnSend:
+                    type: boolean
+                    example: true
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Bạn không có quyền gỡ tin nhắn này.
+        '500':
+          description: Internal Server Error
+
+  /react-messages/{messageId}:
+    post:
+      tags:
+        - ReactMessages
+      summary: Add a reaction to a message
+      description: Add an emoji reaction to a specific message.
+      parameters:
+        - in: path
+          name: messageId
+          required: true
+          schema:
+            type: string
+          description: ID of the message to react to.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - emoji
+              properties:
+                emoji:
+                  type: string
+                  example: '👍'
+      responses:
+        '200':
+          description: Reaction added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    example: 64afdf12345
+                  messageId:
+                    type: string
+                    example: 64afdf67890
+                  senderId:
+                    type: string
+                    example: 64afdf45678
+                  emoji:
+                    type: string
+                    example: '👍'
+        '500':
+          description: Internal Server Error
+
+  /react-messages/emojis:
+    get:
+      tags:
+        - ReactMessages
+      summary: Get all emojis for messages
+      description: Retrieve all emoji reactions associated with messages.
+      responses:
+        '200':
+          description: Emojis retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                      example: 64afdf12345
+                    messageId:
+                      type: string
+                      example: 64afdf67890
+                    senderId:
+                      type: string
+                      example: 64afdf45678
+                    emoji:
+                      type: string
+                      example: '❤️'
+        '500':
+          description: Internal Server Error
+
+  /react-messages/{reactMessageId}:
+    patch:
+      tags:
+        - ReactMessages
+      summary: Update a reaction
+      description: Update an emoji reaction for a specific message.
+      parameters:
+        - in: path
+          name: reactMessageId
+          required: true
+          schema:
+            type: string
+          description: ID of the reaction to update.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - emoji
+              properties:
+                emoji:
+                  type: string
+                  example: '🎉'
+      responses:
+        '200':
+          description: Reaction updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    example: 64afdf12345
+                  messageId:
+                    type: string
+                    example: 64afdf67890
+                  senderId:
+                    type: string
+                    example: 64afdf45678
+                  emoji:
+                    type: string
+                    example: '🎉'
+        '500':
+          description: Internal Server Error
+
+    delete:
+      tags:
+        - ReactMessages
+      summary: Delete a reaction
+      description: Delete an emoji reaction for a specific message.
+      parameters:
+        - in: path
+          name: reactMessageId
+          required: true
+          schema:
+            type: string
+          description: ID of the reaction to delete.
+      responses:
+        '200':
+          description: Reaction deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: React message deleted successfully
+        '500':
+          description: Internal Server Error
+
+  /messages/{messageId}/reply:
+    post:
+      tags:
+        - ReplyMessages
+      summary: Create a reply message
+      description: Add a reply to a specific message.
+      parameters:
+        - in: path
+          name: messageId
+          required: true
+          schema:
+            type: string
+          description: ID of the message being replied to.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                replyMessage:
+                  type: string
+                  description: Content of the reply message.
+                  example: 'This is a reply.'
+                receiverId:
+                  type: string
+                  description: ID of the receiver of the reply message.
+                  example: '63fabcde12345def67890abc'
+      responses:
+        201:
+          description: Reply message created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    example: '63fabcde12345def67890xyz'
+                  receiverId:
+                    type: string
+                    example: '63fabcde12345def67890abc'
+                  senderId:
+                    type: string
+                    example: '63fabcde12345def67890def'
+                  messageId:
+                    type: string
+                    example: '63fabcde12345def67890ghi'
+                  replyMessage:
+                    type: string
+                    example: 'This is a reply.'
+                  oldMessageContent:
+                    type: string
+                    example: 'Original message content.'
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: '2025-01-03T12:00:00Z'
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    example: '2025-01-03T12:00:00Z'
+        400:
+          description: Invalid request data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'Invalid messageId or receiverId.'
+        404:
+          description: Original message not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'Original message not found.'
+        500:
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'Internal Server Error.'
+
+    get:
+      tags:
+        - ReplyMessages
+      summary: Get all reply messages for a message
+      description: Retrieve all replies associated with a specific message ID.
+      parameters:
+        - in: path
+          name: messageId
+          required: true
+          schema:
+            type: string
+          description: ID of the message to retrieve replies for.
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+          description: The page number for pagination (default is 1).
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+          description: The number of replies per page (default is 10).
+      responses:
+        200:
+          description: List of reply messages retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  replies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          example: '63fabcde12345def67890xyz'
+                        receiverId:
+                          type: string
+                          example: '63fabcde12345def67890abc'
+                        senderId:
+                          type: string
+                          example: '63fabcde12345def67890def'
+                        messageId:
+                          type: string
+                          example: '63fabcde12345def67890ghi'
+                        replyMessage:
+                          type: string
+                          example: 'This is a reply.'
+                        oldMessageContent:
+                          type: string
+                          example: 'Original message content.'
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: '2025-01-03T12:00:00Z'
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          example: '2025-01-03T12:00:00Z'
+                  pagination:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        example: 25
+                      page:
+                        type: integer
+                        example: 1
+                      limit:
+                        type: integer
+                        example: 10
+        404:
+          description: No replies found for the specified message ID.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'No replies found.'
+        500:
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'Internal Server Error.'
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      name: Token
+      in: header
+      description: "Provide your API key with the 'Bearer' prefix"
